@@ -40,7 +40,7 @@ const SideBar = () => {
                     defaultSelectedKeys={['1']}
                     defaultOpenKeys={['sub1']}
                     mode="inline"
-                    inlineCollapsed={collapsed}
+                    inlineCollapsed={false} // se cambia a false, el anterior "collapsed" no funcionaba
                     items={items}
                     style={{ height: "100%", fontWeight: "bold" }}
                 />
