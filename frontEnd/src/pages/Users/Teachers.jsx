@@ -1,6 +1,9 @@
 import React from "react";
+import PanelLayout from "../../layout/PanelLayout";
 import TeachersForm from "../../components/UserForms/TeachersForm";
 import { Table } from "antd";
+
+import PersonIcon from '@mui/icons-material/Person';
 
 const Teachers = () => {
   const dataSource = [
@@ -33,18 +36,23 @@ const Teachers = () => {
     },
   ];
 
+  let iconAux = <PersonIcon style={{fontSize:"2.25rem"}}></PersonIcon>
   return (
-    <div>
-      <h1>Maestros</h1>
-      <div style={{ width: 800, margin: "0 auto" }}>
+    <PanelLayout 
+    icon={iconAux}
+    name="Usuarios"
+
+    content={
+      <div>
         <TeachersForm
           onSubmit={(data) => {
-            console.log("Datos del formulario:", data);
+            console.log("Datos del formulario:", data)
           }}
         />
-        <Table dataSource={dataSource} columns={columns} />;
-      </div>
+        <Table dataSource={dataSource} columns={columns} />
     </div>
+    }
+    />
   );
 };
 
