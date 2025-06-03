@@ -2,15 +2,16 @@ import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 import SchoolIcon from '@mui/icons-material/School';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
-
+import { Link } from 'react-router-dom';
 import { Menu, ConfigProvider } from 'antd';
 
 const items = [
-    { key: '1', icon: <CoPresentIcon />, label: 'Maestros' },
-    { key: '2', icon: <SchoolIcon></SchoolIcon>, label: 'Alumnos' },
-    { key: '3', icon: <GroupIcon />, label: 'Grupos' },
-    { key: '4', icon: <PersonIcon />, label: 'Usuarios' },
+  { key: '1', icon: <CoPresentIcon />, label: 'Maestros'},
+  { key: '2', icon: <SchoolIcon />, label: 'Alumnos' },
+  { key: '3', icon: <GroupIcon />,  label: <Link to="/grupos">Grupos</Link>,},
+  { key: '4', icon: <PersonIcon />, label: <Link to="/usuarios">Usuarios</Link>, },
 ];
+
 const SideBar = () => {
     return (
         <ConfigProvider
