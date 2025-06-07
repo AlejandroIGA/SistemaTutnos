@@ -1,24 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, Button, Radio, Table, Typography, Form, ConfigProvider } from 'antd';
 import { CheckOutlined, SearchOutlined } from '@ant-design/icons';
 import GroupIcon from '@mui/icons-material/Group';
 import Search from "antd/es/input/Search";
 
-const TeacherFormCrud = ({ onSubmit, editData }) => {
+const TeacherFormCrud = ({ onSubmit, editData, onSearch }) => {
     const [form] = Form.useForm();
 
     const [busqueda, setBusqueda] = useState("");
     const [filtro, setFiltro] = useState("nombre");
 
-    const handleFinish = (values) => {
-        console.log("Form data:", values);
-        onSubmit?.(values); 
-    };
-
-    const handleSearch = () => {
-        console.log("Busqueda", busqueda, "en", filtro);
-    }
-
+    useEffect(()=>{
+        console.log("Console desde el form: ", editData)
+        if(editData){
+            console.log("ABEMUS DATOS")
+            form.setFieldsValue({
+                nombre:editData.nombre,
+                correo:editData.correo,
+                cubiculo:editData.cubiculo,
+                grupos:editData.grupos
+            })
+        }
+    },[editData])
 
 
     return (
@@ -37,7 +40,7 @@ const TeacherFormCrud = ({ onSubmit, editData }) => {
         >
             <Search
                     placeholder="Buscar por nombre de grupo o carrera"
-                    onSearch={handleSearch}
+                    onSearch={() => onSearch(busqueda,filtro)}
                     value={busqueda}
                     onChange={(e)=>setBusqueda(e.target.value)}
                     style={{ marginBottom: 12 }}
@@ -54,11 +57,11 @@ const TeacherFormCrud = ({ onSubmit, editData }) => {
             <Form
                 form={form}
                 layout="vertical"
-                onFinish={handleFinish}
+                onFinish={() => onSubmit(form.getFieldsValue())}
                 autoComplete="off"
             >
                 <Form.Item
-                    name="name"
+                    name="nombre"
                     label="Nombre"
                     rules={[{ required: true, message: "Ingrese un nombre" }]}
                 >
