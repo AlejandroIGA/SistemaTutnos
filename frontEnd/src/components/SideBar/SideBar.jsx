@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Menu, ConfigProvider } from 'antd';
 
 const items = [
-  { key: '1', icon: <CoPresentIcon />, label: 'Maestros'},
+  { key: '1', icon: <CoPresentIcon />, label: <Link to='/maestros'>Maestros</Link>},
   { key: '2', icon: <SchoolIcon />, label: 'Alumnos' },
   { key: '3', icon: <GroupIcon />,  label: <Link to="/grupos">Grupos</Link>,},
   { key: '4', icon: <PersonIcon />, label: <Link to="/usuarios">Usuarios</Link>, },

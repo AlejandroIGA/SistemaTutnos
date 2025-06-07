@@ -1,13 +1,25 @@
-import React from "react";
-import { Form, Input, Button, Select, ConfigProvider } from "antd";
+import React, { useState } from "react";
+import { Input, Button, Radio, Table, Typography, Form, ConfigProvider } from 'antd';
+import { CheckOutlined, SearchOutlined } from '@ant-design/icons';
+import GroupIcon from '@mui/icons-material/Group';
+import Search from "antd/es/input/Search";
 
-const TeacherFormCrud = ({ onSubmit }) => {
+const TeacherFormCrud = ({ onSubmit, editData }) => {
     const [form] = Form.useForm();
+
+    const [busqueda, setBusqueda] = useState("");
+    const [filtro, setFiltro] = useState("nombre");
 
     const handleFinish = (values) => {
         console.log("Form data:", values);
-        onSubmit?.(values); // si se pasó una función onSubmit, la ejecuta
+        onSubmit?.(values); 
     };
+
+    const handleSearch = () => {
+        console.log("Busqueda", busqueda, "en", filtro);
+    }
+
+
 
     return (
         <ConfigProvider
@@ -23,6 +35,22 @@ const TeacherFormCrud = ({ onSubmit }) => {
                 }
             }}
         >
+            <Search
+                    placeholder="Buscar por nombre de grupo o carrera"
+                    onSearch={handleSearch}
+                    value={busqueda}
+                    onChange={(e)=>setBusqueda(e.target.value)}
+                    style={{ marginBottom: 12 }}
+                />
+                <Radio.Group
+                    onChange={(e) => setFiltro(e.target.value)}
+                    value={filtro}
+                    style={{marginBottom: 24, display: 'flex', justifyContent: 'center',}}
+                    >
+                    <Radio value="nombre">Nombre</Radio>
+                    <Radio value="correo">Correo</Radio>
+                    <Radio value="grupo">Grupo</Radio>
+                </Radio.Group>
             <Form
                 form={form}
                 layout="vertical"
@@ -31,41 +59,49 @@ const TeacherFormCrud = ({ onSubmit }) => {
             >
                 <Form.Item
                     name="name"
-                    label="Seleccionar Maestro"
-                    rules={[{ required: true, message: "Seleccionar Maestro" }]}
+                    label="Nombre"
+                    rules={[{ required: true, message: "Ingrese un nombre" }]}
                 >
-                    <Select placeholder="Selecciona un maestro para su alta">
-                        <Option value="male">Isaac Newton</Option>
-                        <Option value="female">Stephen Hawking </Option>
-                        <Option value="other">Marie Curie</Option>
-                    </Select>
+                    <Input placeholder="Ingrese un nombre" />
                 </Form.Item>
 
                 <Form.Item
-                    name="password"
-                    label="Contraseña"
-                    rules={[{ required: true, message: "Por favor ingresa tu contraseña" }]}
+                    name="correo"
+                    label="Correo"
+                    rules={[{ required: true, message: "Ingrese un correo" }]}
                 >
-                    <Input.Password />
+                    <Input placeholder="Ingrese un correo" type="email" />
                 </Form.Item>
 
                 <Form.Item
-                    name="password2"
-                    label="Confirmar Contraseña"
-                    rules={[{ required: true, message: "Confirmar contraseña" }]}
+                    name="cubiculo"
+                    label="Cubículo"
+                    rules={[{ required: true, message: "Ingrese un cubículo" }]}
                 >
-                    <Input.Password />
+                    <Input placeholder="Ingrese un número de cubículo" />
                 </Form.Item>
 
-                <Form.Item>
+                <Form.Item
+                    name="grupos"
+                    label="Grupos"
+                    rules={[{ required: true, message: "Seleccióne uno o varios grupos" }]}
+                >
+                    <Input placeholder="Aquí apareceran los grupos seleccionados" />
+                </Form.Item>
+                <div style={{ display: "flex", justifyContent:"space-between", alignContent:"center", alignItems:"center" }}>
                     <Button
                         type="primary"
-                        htmlType="submit"
-                        style={{ margin: "0 auto", display: "flex" }}
+                        icon={<GroupIcon></GroupIcon>}
+                        style={{ border: "none" }}
                     >
-                        Registrar
+                        Añadir grupos
                     </Button>
-                </Form.Item>
+                    <Button className='boton-agregar' htmlType="submit" icon={<CheckOutlined />}>
+                        Guardar
+                    </Button>
+                </div>
+
+
             </Form>
         </ConfigProvider>
     );
