@@ -18,20 +18,31 @@ const TeacherCrud = () => {
             id: "1",
             nombre: "Maestro 1",
             correo: "maestro1@correo.com",
-            grupos: "1,2,3,4",
+            grupos: [
+                { id: 1, nombre: "Grupo A", carrera: "Ingeniería", semestre: "5to" },
+                { id: 2, nombre: "Grupo B", carrera: "Sistemas", semestre: "3ro" }
+            ],
             cubiculo: "1A"
         },
         {
             id: "2",
             nombre: "Maestro 2",
             correo: "maestro2@correo.com",
-            grupos: "1,2,3,4",
+            grupos: [
+                { id: 3, nombre: "Grupo C", carrera: "Informática", semestre: "4to" },
+                { id: 4, nombre: "Grupo D", carrera: "Mecánica", semestre: "6to" }
+            ],
             cubiculo: "2B"
         },
     ]);
 
+    const formatGruposForTable = (grupos) => {
+        if (!grupos || grupos.length === 0) return 'Sin grupos';
+        return grupos.map(grupo => grupo.nombre).join(', ');
+    };
+
     const edit = (id) => {
-        let dataAux = datos.find(dato => dato.id == id);
+        let dataAux = teachers.find(teacher => teacher.id == id);
         setEditData(dataAux);
         setIsEditting(true);
     }
@@ -80,7 +91,7 @@ const TeacherCrud = () => {
     const columnas = [
         { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
         { title: 'Correo', dataIndex: 'correo', key: 'correo' },
-        { title: 'Grupos', dataIndex: 'grupos', key: 'grupos' },
+        { title: 'Grupos', key: 'grupos', render: (text, record) => formatGruposForTable(record.grupos) },
         { title: 'Cubículo', dataIndex: 'cubiculo', key: 'cubiculo' },
         {
             title: 'Acciones',
@@ -109,13 +120,23 @@ const TeacherCrud = () => {
         }
     ];
 
+    const grupos = [
+    { id: 1, nombre: "Grupo A", carrera: "Ingeniería", semestre: "5to" },
+    { id: 2, nombre: "Grupo B", carrera: "Sistemas", semestre: "3ro" },
+];
+
+    const clearForm = () => {
+        setEditData(null);
+        setIsEditting(false);
+    }
+
     return (
         <PanelLayout
             icon={iconAux}
             name="Maestros"
             content={
                 <div>
-                    <TeacherFormCrud editData={editData} onSearch={search} onSubmit={submit}/>
+                    <TeacherFormCrud editData={editData} clearForm={clearForm} onSearch={search} onSubmit={submit} grupos={grupos} isEditting={isEditting}/>
                     <br></br>
                     <Table columns={columnas} dataSource={teachers} rowKey="id" pagination={{pageSize:10}} />
                 </div>
