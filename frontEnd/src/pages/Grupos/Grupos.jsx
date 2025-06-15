@@ -69,7 +69,7 @@ const Grupos = () => {
                     <Radio value="carrera">Carrera</Radio>
                 </Radio.Group>
                 <Title level={5}>
-                <UsergroupAddOutlined style={{ marginRight: 8 }} />
+                <UsergroupAddOutlined style={{ marginRight: 10 }} />
                     Registrar nuevo grupo
                 </Title>
                 <FormGroup form={form} />
