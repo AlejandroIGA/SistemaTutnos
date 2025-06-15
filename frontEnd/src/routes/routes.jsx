@@ -9,7 +9,7 @@ function Rutas() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Teachers />} />
+        <Route path="/maestros" element={<TeacherCrud />} />
         <Route path="/grupos" element={<Grupos />} />
         <Route path="/usuarios" element={<Teachers />} />
         <Route path="solicitudesM" element={<SolicitudesM />} />
