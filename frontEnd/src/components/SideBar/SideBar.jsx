@@ -4,7 +4,13 @@ import SchoolIcon from '@mui/icons-material/School';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, ConfigProvider } from 'antd';
-import { useMemo } from 'react';
+
+const items = [
+  { key: '1', icon: <CoPresentIcon />, label: 'Maestros'},
+  { key: '2', icon: <SchoolIcon />, label: 'Alumnos' },
+  { key: '3', icon: <GroupIcon />,  label: <Link to="/grupos">Grupos</Link>,},
+  { key: '4', icon: <PersonIcon />, label: <Link to="/usuarios">Usuarios</Link>, }
+];
 
 const SideBar = () => {
     const location = useLocation();

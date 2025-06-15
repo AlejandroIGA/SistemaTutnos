@@ -1,0 +1,183 @@
+.solicitud-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+/* Columnas */
+.columna-izquierda {
+  padding-right: 12px;
+}
+
+.columna-derecha {
+  padding-left: 12px;
+}
+
+/* Card de búsqueda */
+.busqueda-card {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #E2F1E7;
+}
+
+.titulo-principal {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #387478;
+}
+
+.busqueda-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.matricula-input {
+  width: 100%;
+  height: 40px;
+}
+
+.boton-buscar {
+  background-color: #629584;
+  height: 40px;
+  white-space: nowrap;
+}
+
+.boton-buscar:hover {
+  background-color: #629584 !important;
+}
+
+/* Encabezados */
+.encabezado-maestros,
+.encabezado-solicitudes {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px 8px;
+  font-weight: bold;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 8px;
+}
+
+.titulo-encabezado {
+  font-size: 14px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+/* Card de maestros */
+.maestros-card {
+  border-radius: 8px;
+}
+
+.instrucciones {
+  padding: 40px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  background: #fafafa;
+  border-radius: 8px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mensaje-error {
+  color: #ff4d4f;
+}
+
+/* Items de maestros */
+.maestro-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.maestro-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nombre-maestro {
+  font-size: 16px;
+  margin: 0;
+  color: #333;
+}
+
+.tag-disponibilidad {
+  border: none !important;
+  background: transparent !important;
+  font-weight: bold;
+  padding: 0 8px;
+  width: fit-content;
+}
+
+.boton-solicitar {
+  background-color: #387478;
+}
+
+.boton-solicitar:not(:disabled):hover{
+    background-color: #387478 !important;
+}
+
+/* Estilos para la tabla de solicitudes */
+.tabla-solicitudes {
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+}
+
+.encabezado-tabla {
+  display: flex;
+  background-color: #629584;
+  color: white;
+  font-weight: bold;
+  padding: 12px 16px;
+}
+
+.columna-maestro {
+  flex: 2;
+}
+
+.columna-estatus {
+  flex: 1;
+  text-align: right;
+}
+
+.cuerpo-tabla {
+  display: flex;
+  flex-direction: column;
+}
+
+.fila-solicitud {
+  display: flex;
+  padding: 12px 16px;
+  align-items: center;
+}
+
+.fila-solicitud:last-child {
+  border-bottom: none;
+}
+
+.fila-solicitud .columna-maestro {
+  flex: 2;
+}
+
+.fila-solicitud .columna-estatus {
+  flex: 1;
+  text-align: right;
+}
+
+.tag-estatus {
+  border: none !important;
+  background: transparent !important;
+  font-weight: bold;
+}
+
+.sin-solicitudes {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}

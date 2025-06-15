@@ -41,6 +41,7 @@ const Grupos = () => {
         }
     ];
     let iconAux = <GroupIcon style={{ fontSize: "2.25rem" }} />
+
     return (
         <PanelLayout icon={iconAux} name="Grupos" content={
             <div>
