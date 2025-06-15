@@ -1,0 +1,21 @@
+.boton-agregar {
+  background-color: #52A976;
+  color: white;              
+  border: none;
+}
+.boton-editar {
+  background-color: #A9A252;
+  color: white;
+  border: none;
+ 
+}
+.boton-eliminar {
+  background-color: #A95254;
+  color: white;
+  border: none;
+}
+.boton-buscar {
+  background-color: #387478;
+  color: white;
+  border: none;
+}
