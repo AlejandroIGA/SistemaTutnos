@@ -46,7 +46,16 @@ const Grupos = () => {
             <div>
                 <Input.Search
                     placeholder="Buscar por nombre de grupo o carrera"
-                    enterButton={<Button className="boton-buscar" icon={<SearchOutlined />}>Buscar</Button>}
+                    enterButton={
+                        <Button
+                            className="boton-buscar"
+                            icon={<SearchOutlined />}
+                            type="primary"
+                            style={{ backgroundColor: '#387478', borderColor: '#387478' }}
+                        >
+                            Buscar
+                        </Button>
+                    }
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                     style={{ marginBottom: 12 }}
