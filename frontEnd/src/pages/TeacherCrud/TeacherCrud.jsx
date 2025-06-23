@@ -4,7 +4,8 @@ import PanelLayout from "../../layout/PanelLayout";
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Table, Button, Modal, message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import profesorService from "../../services/profesorService";
 
 
 
@@ -36,6 +37,21 @@ const TeacherCrud = () => {
         },
     ]);
 
+    const getProfesores = async (activos) => {
+        const response = await profesorService.getAll(activos);
+        console.log("REPONSE FRONT: ", response)
+    }
+
+    const getProfesorById = async (id) => {
+        const response = await profesorService.getById(id);
+        console.log("REPONSE FRONT: ", response)
+    }
+
+    useEffect(()=>{
+        getProfesores(true);
+        getProfesorById(1);
+    },[])
+
     const formatGruposForTable = (grupos) => {
         if (!grupos || grupos.length === 0) return 'Sin grupos';
         return grupos.map(grupo => grupo.nombre).join(', ');
@@ -51,8 +67,10 @@ const TeacherCrud = () => {
         console.log("SEARCH: ",value," ", filter)
     }
 
-    const submit = (formData) => {
-        console.log("submit", formData)
+    const submit = async (formData) => {
+        formData["activo"] = 1;
+        const response = await profesorService.create(formData);
+        console.log("REPONSE FRONT: ", response)
     }
 
     const deleteTeacher = (id, nombre) => {
