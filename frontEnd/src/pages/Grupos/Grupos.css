@@ -8,8 +8,9 @@
   background-color: #A9A252;
   color: white;
   border: none;
- 
+  margin-right: 8px; 
 }
+
 .boton-eliminar {
   background-color: #A95254;
   color: white;
