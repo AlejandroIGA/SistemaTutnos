@@ -23,9 +23,9 @@ const TeachersForm = ({ onSubmit }) => {
         rules={[{ required: true, message: "Seleccionar Maestro" }]}
       >
         <Select placeholder="Selecciona un maestro para su alta">
-          <Option value="male">Isaac Newton</Option>
-          <Option value="female">Stephen Hawking </Option>
-          <Option value="other">Marie Curie</Option>
+          <Option value="Isaac Newton">Isaac Newton</Option>
+          <Option value="Stephen Hawking ">Stephen Hawking </Option>
+          <Option value="Marie Curie">Marie Curie</Option>
         </Select>
       </Form.Item>
 
