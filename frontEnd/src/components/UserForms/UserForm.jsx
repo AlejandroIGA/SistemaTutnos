@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
+import { CheckOutlined } from "@ant-design/icons";
 
 const UserForm = ({ onSubmit }) => {
   const [form] = Form.useForm();
@@ -33,8 +34,12 @@ const UserForm = ({ onSubmit }) => {
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" style={{ margin: "0 auto", display: "flex" }}>
-          Registrar
+        <Button
+          className="boton-agregar"
+          htmlType="submit"
+          icon={<CheckOutlined />}
+        >
+          Guardar
         </Button>
       </Form.Item>
     </Form>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Button, Select } from "antd";
+import { CheckOutlined  } from '@ant-design/icons';
 
 const TeachersForm = ({ onSubmit }) => {
   const [form] = Form.useForm();
@@ -22,9 +23,9 @@ const TeachersForm = ({ onSubmit }) => {
         rules={[{ required: true, message: "Seleccionar Maestro" }]}
       >
         <Select placeholder="Selecciona un maestro para su alta">
-          <Option value="male">Isaac Newton</Option>
-          <Option value="female">Stephen Hawking </Option>
-          <Option value="other">Marie Curie</Option>
+          <Option value="Isaac Newton">Isaac Newton</Option>
+          <Option value="Stephen Hawking ">Stephen Hawking </Option>
+          <Option value="Marie Curie">Marie Curie</Option>
         </Select>
       </Form.Item>
 
@@ -46,11 +47,11 @@ const TeachersForm = ({ onSubmit }) => {
 
       <Form.Item>
         <Button
-          type="primary"
+          className="boton-agregar"
           htmlType="submit"
-          style={{ margin: "0 auto", display: "flex" }}
+          icon={<CheckOutlined />}
         >
-          Registrar
+          Guardar
         </Button>
       </Form.Item>
     </Form>
