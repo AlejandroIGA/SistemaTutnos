@@ -1,7 +1,8 @@
 import React from 'react';
-import { Form, Input, Button, ConfigProvider } from 'antd';
-import { CheckOutlined  } from '@ant-design/icons';
-const FormGroup = ({ form, onFinish }) => {
+import { Form, Input, Button, ConfigProvider, Select } from 'antd';
+import { CheckOutlined } from '@ant-design/icons';
+
+const FormGroup = ({ form, onFinish, editar }) => {
   return (
     <ConfigProvider
       theme={{
@@ -13,7 +14,6 @@ const FormGroup = ({ form, onFinish }) => {
             labelColor: "#387478",
             fontFamily: "Inter, sans-serif",
           }
-
         },
       }}
     >
@@ -25,6 +25,7 @@ const FormGroup = ({ form, onFinish }) => {
         >
           <Input placeholder="Ingresar grupo" />
         </Form.Item>
+
         <Form.Item
           label="Carrera"
           name="carrera"
@@ -32,13 +33,28 @@ const FormGroup = ({ form, onFinish }) => {
         >
           <Input placeholder="Ingresar carrera" />
         </Form.Item>
+
+        {editar && (
+          <Form.Item
+            label="Estado"
+            name="estado"
+            rules={[{ required: true, message: 'Seleccione el estado del grupo' }]}
+          >
+            <Select placeholder="Seleccionar estado">
+              <Select.Option value={true}>Activo</Select.Option>
+              <Select.Option value={false}>Inactivo</Select.Option>
+            </Select>
+          </Form.Item>
+        )}
+
         <Form.Item>
-          <Button className='boton-agregar' htmlType="submit" icon={<CheckOutlined  />}>
-            Guardar
+          <Button className='boton-agregar' htmlType="submit" icon={<CheckOutlined />}>
+            {editar ? "Actualizar" : "Guardar"}
           </Button>
         </Form.Item>
       </Form>
     </ConfigProvider>
   );
 };
+
 export default FormGroup;
