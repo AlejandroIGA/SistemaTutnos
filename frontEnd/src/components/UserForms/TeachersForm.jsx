@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Button, Select } from "antd";
+import { CheckOutlined  } from '@ant-design/icons';
 
 const TeachersForm = ({ onSubmit }) => {
   const [form] = Form.useForm();
@@ -46,11 +47,11 @@ const TeachersForm = ({ onSubmit }) => {
 
       <Form.Item>
         <Button
-          type="primary"
+          className="boton-agregar"
           htmlType="submit"
-          style={{ margin: "0 auto", display: "flex" }}
+          icon={<CheckOutlined />}
         >
-          Registrar
+          Guardar
         </Button>
       </Form.Item>
     </Form>

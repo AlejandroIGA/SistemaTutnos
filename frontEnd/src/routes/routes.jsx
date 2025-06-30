@@ -14,6 +14,7 @@ function Rutas() {
         <Route path="/maestros" element={<TeacherCrud />} />
         <Route path="/grupos" element={<Grupos />} />
         <Route path="/usuarios" element={<Teachers />} />
+        <Route path="/administradores" element={<Admins />} />
         <Route path="solicitudesM" element={<SolicitudesM />} />
         <Route path="solicitudesA" element={<SolicitudesA/>} />
       </Routes>

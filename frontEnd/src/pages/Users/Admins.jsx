@@ -1,6 +1,7 @@
-import React from "react";
-import UserForm from "../../components/UserForms/UserForm";
 import { Table } from "antd";
+import PanelLayout from "../../layout/PanelLayout";
+import UserForm from "../../components/UserForms/UserForm";
+import PersonIcon from "@mui/icons-material/Person";
 
 const Admins = () => {
   const dataSource = [
@@ -40,18 +41,22 @@ const Admins = () => {
     },
   ];
 
+  let iconAux = <PersonIcon style={{ fontSize: "2.25rem" }}></PersonIcon>;
   return (
-    <div>
-      <h1>Administradores</h1>
-      <div style={{ width: 800, margin: "0 auto" }}>
-        <UserForm
-          onSubmit={(data) => {
-            console.log("Datos del formulario:", data);
-          }}
-        />
-        <Table dataSource={dataSource} columns={columns} />;
-      </div>
-    </div>
+    <PanelLayout
+      icon={iconAux}
+      name="Administradores"
+      content={
+        <div>
+          <UserForm
+            onSubmit={(data) => {
+              console.log("Datos del formulario:", data);
+            }}
+          />
+          <Table dataSource={dataSource} columns={columns} />
+        </div>
+      }
+    />
   );
 };
 
