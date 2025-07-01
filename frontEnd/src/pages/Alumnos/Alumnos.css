@@ -1,0 +1,47 @@
+.student-crud-wrapper {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.radio-filter {
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+.input-outline,
+.ant-select-selector {
+  border: 2px solid #0f5e66 !important;
+  border-radius: 4px !important;
+}
+
+.btn-save {
+  background-color: #34a853;
+  border: none;
+  color: white;
+  font-weight: 500;
+  padding: 6px 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-save:hover {
+  background-color: #3cbf60;
+}
+
+.btn-save:active {
+  background-color: #2e7d3d;
+}
+
+.btn-edit {
+  background-color: #34a85312;
+  border-color: #34a85342;
+  color: #34a853;
+}
+
+.student-table .ant-table {
+  margin-top: 32px;
+}

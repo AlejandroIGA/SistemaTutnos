@@ -5,6 +5,7 @@ import Admins from "../pages/Users/Admins";
 import SolicitudesM from "../pages/Solicitudes/SolicitudesM";
 import SolicitudesA from "../pages/Solicitudes/SolicitudesA"
 import TeacherCrud from "../pages/TeacherCrud/TeacherCrud";
+import Alumnos from "../pages/Alumnos/Alumnos";
 
 function Rutas() {
   return (
@@ -14,6 +15,7 @@ function Rutas() {
         <Route path="/maestros" element={<TeacherCrud />} />
         <Route path="/grupos" element={<Grupos />} />
         <Route path="/usuarios" element={<Teachers />} />
+        <Route path="/alumnos" element={<Alumnos />} />
         <Route path="/administradores" element={<Admins />} />
         <Route path="solicitudesM" element={<SolicitudesM />} />
         <Route path="solicitudesA" element={<SolicitudesA/>} />
