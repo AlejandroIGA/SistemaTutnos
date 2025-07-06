@@ -14,7 +14,7 @@ const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [],
     const [tempSelectedGroups, setTempSelectedGroups] = useState([]);
 
     useEffect(() => {
-        console.log("Console desde el form: ", editData);
+        //console.log("Console desde el form: ", editData);
         if (editData) {
             console.log("ABEMUS DATOS");
             form.setFieldsValue({
@@ -69,6 +69,13 @@ const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [],
         setSelectedGroups(prev => prev.filter(g => g.id !== grupoToRemove.id));
     };
 
+    const clearFormInternal = () => {
+        form.resetFields();
+        setSelectedGroups([]);
+        setBusqueda("");
+        setFiltro("nombre");
+    };
+
     const handleSubmit = () => {
         const formValues = form.getFieldsValue();
         const dataToSubmit = {
@@ -76,6 +83,9 @@ const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [],
             grupos: selectedGroups
         };
         onSubmit(dataToSubmit);
+        if (!isEditting) {
+            clearFormInternal();
+        }
     };
 
     return (
