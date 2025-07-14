@@ -1,6 +1,7 @@
 import PanelLayout from "../../layout/PanelLayout";
 import TeachersForm from "../../components/UserForms/TeachersForm";
 import usuarioService from "../../services/usuarioService";
+import bcrypt from 'bcryptjs';
 import { Table, message } from "antd";
 import { useState, useEffect } from "react";
 
@@ -24,9 +25,11 @@ const Teachers = () => {
 
     const handleCrearUsuario = async (data) => {
     try {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(data.password, salt);
       const nuevoUsuario = {
         nombre: data.name,
-        contrasena: data.password,
+        contrasena: hashedPassword,
         estatus: true,
         rol: "Maestro",
       };
