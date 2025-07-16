@@ -1,0 +1,24 @@
+.login-container {
+  background-color: #E8F4EC; 
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(34, 50, 63, 0.15);
+  text-align: center;
+}
+
+.login-box h2 {
+  color: #22323F;
+  margin-bottom: 24px;
+  font-weight: 600;
+  font-size: 24px;
+}
