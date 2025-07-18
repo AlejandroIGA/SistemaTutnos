@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GRUPOS_BASE_URL = "http://localhost:8080/api/grupo"
+const GRUPOS_BASE_URL = "http://localhost:8081/api/grupo"
 
 export const obtenerGrupos = async () => {
   try {
@@ -12,7 +12,7 @@ export const obtenerGrupos = async () => {
   }
 };
 
-{ /*export const obtenerGrupoPorId = async (id) => {
+export const obtenerGrupoPorId = async (id) => {
   try {
     const response = await axios.get(`${GRUPOS_BASE_URL}/${id}`);
     return response.data;
@@ -21,7 +21,7 @@ export const obtenerGrupos = async () => {
     throw error.response?.data?.message || "Error al obtener grupo por ID";
   }
 };
-*/ }
+
 
 export const obtenerGrupoPorCarrera = async (carrera) => {
   try {
