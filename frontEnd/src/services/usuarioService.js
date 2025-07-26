@@ -36,6 +36,14 @@ const usuarioService = {
             return [{ "errorCode": error.status }]
         }
     },
+    "login": async (data) => {
+        try {
+            const response = await axios.post(`${USUARIO_BASE_URL}/login`, data);
+            return response.data;
+        } catch (error) {
+            return [{ errorCode: error.response?.status || 500 }];
+        }
+    },
 }
 
 export default usuarioService;
