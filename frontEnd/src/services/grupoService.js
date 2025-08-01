@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GRUPOS_BASE_URL = "http://localhost:8080/api/grupo"
+const GRUPOS_BASE_URL = "http://localhost:8081/api/grupo"
 
 export const obtenerGrupos = async () => {
   try {
