@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const USUARIO_BASE_URL = "http://localhost:8080/api/usuario"
+const USUARIO_BASE_URL = "http://localhost:8082/api/usuario"
 
 const usuarioService = {
     "getAll": async () => {
