@@ -8,19 +8,30 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (values) => {
+  try {
     const response = await usuarioService.login({
-      email: values.email,
-      password: values.password,
+      nombre: values.nombre,
+      contrasena: values.contrasena,
     });
 
-    if (response.token) {
-      localStorage.setItem('token', response.token);
+    if (response.rol === 'Profesor' && response.idProfesor) {
+      localStorage.setItem('id', response.idProfesor); 
       alert('Login exitoso');
-      navigate('/solicitudesM');
+      navigate('/solicitudesM'); 
+    } else if (response.rol === 'Admin' && response.idUsuario) {
+      localStorage.setItem('id', response.idUsuario); 
+      alert('Login exitoso');
+      navigate('/usuarios'); 
     } else {
-      alert('Login fallido');
+      alert('Login fallido: rol o ID no válidos');
     }
-}
+
+  } catch (error) {
+    console.error('Error durante el login:', error);
+    alert('Ocurrió un error durante el login');
+  }
+};
+
 
   return (
     <div className="login-container">

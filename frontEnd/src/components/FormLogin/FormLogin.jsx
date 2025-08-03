@@ -11,17 +11,17 @@ const FormLogin = ({ onFinish }) => {
       onFinish={onFinish}
     >
       <Form.Item
-        name="email"
+        name="nombre"
         rules={[{ required: true, message: 'Por favor ingresa tu correo' }]}
       >
         <Input
           prefix={<UserOutlined />}
-          placeholder="Correo electrónico"
+          placeholder="Nombre de usuario"
         />
       </Form.Item>
 
       <Form.Item
-        name="password"
+        name="contrasena"
         rules={[{ required: true, message: 'Por favor ingresa tu contraseña' }]}
       >
         <Input.Password
