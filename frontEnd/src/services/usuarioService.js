@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const USUARIO_BASE_URL = "http://localhost:8080/api/usuario"
+const USUARIO_BASE_URL = "http://localhost:8082/api/usuario"
 
 const usuarioService = {
     "getAll": async () => {
@@ -34,6 +34,14 @@ const usuarioService = {
             return response.data;
         } catch (error) {
             return [{ "errorCode": error.status }]
+        }
+    },
+    "login": async (data) => {
+        try {
+            const response = await axios.post(`${USUARIO_BASE_URL}/login`, data);
+            return response.data;
+        } catch (error) {
+            return [{ errorCode: error.response?.status || 500 }];
         }
     },
 }

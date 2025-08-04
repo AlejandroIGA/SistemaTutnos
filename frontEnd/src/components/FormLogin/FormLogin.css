@@ -1,0 +1,26 @@
+.login-form {
+  width: 100%;
+}
+
+.login-form-button {
+  background-color: #3A7C81;
+  border-color: #3A7C81;
+  color: #fff;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.login-form-button:hover,
+.login-form-button:focus {
+  background-color: #2f6367 !important;
+  border-color: #2f6367 !important;
+  color: #fff;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-input-affix-wrapper .anticon {
+  color: rgba(0, 0, 0, 0.25);
+}

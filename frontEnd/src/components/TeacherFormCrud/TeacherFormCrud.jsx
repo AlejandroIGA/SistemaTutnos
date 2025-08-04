@@ -3,6 +3,7 @@ import { Input, Button, Radio, Table, Typography, Form, ConfigProvider, Modal, C
 import { CheckOutlined, SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import GroupIcon from '@mui/icons-material/Group';
 import Search from "antd/es/input/Search";
+import profesorService from "../../services/profesorService";
 
 const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [], isEditting }) => {
     const [form] = Form.useForm();
@@ -14,7 +15,7 @@ const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [],
     const [tempSelectedGroups, setTempSelectedGroups] = useState([]);
 
     useEffect(() => {
-        console.log("Console desde el form: ", editData);
+        //console.log("Console desde el form: ", editData);
         if (editData) {
             console.log("ABEMUS DATOS");
             form.setFieldsValue({
@@ -67,6 +68,15 @@ const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [],
 
     const removeGroup = (grupoToRemove) => {
         setSelectedGroups(prev => prev.filter(g => g.id !== grupoToRemove.id));
+        //Eliminar la relación de profesor-grupo
+        profesorService.deleteGroup(editData.id, grupoToRemove.id);
+    };
+
+    const clearFormInternal = () => {
+        form.resetFields();
+        setSelectedGroups([]);
+        setBusqueda("");
+        setFiltro("nombre");
     };
 
     const handleSubmit = () => {
@@ -76,6 +86,9 @@ const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [],
             grupos: selectedGroups
         };
         onSubmit(dataToSubmit);
+        if (!isEditting) {
+            clearFormInternal();
+        }
     };
 
     return (
@@ -106,7 +119,6 @@ const TeacherFormCrud = ({ onSubmit, editData, clearForm, onSearch, grupos = [],
             >
                 <Radio value="nombre">Nombre</Radio>
                 <Radio value="correo">Correo</Radio>
-                <Radio value="grupo">Grupo</Radio>
             </Radio.Group>
 
             <Form

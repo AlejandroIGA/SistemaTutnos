@@ -2,10 +2,11 @@ import Title from "antd/es/skeleton/Title";
 import TeacherFormCrud from "../../components/TeacherFormCrud/TeacherFormCrud";
 import PanelLayout from "../../layout/PanelLayout";
 import CoPresentIcon from '@mui/icons-material/CoPresent';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, ConsoleSqlOutlined } from '@ant-design/icons';
 import { Table, Button, Modal, message } from "antd";
 import { useEffect, useState } from "react";
 import profesorService from "../../services/profesorService";
+import { obtenerGrupos } from "../../services/grupoService";
 
 
 
@@ -14,32 +15,20 @@ const TeacherCrud = () => {
 
     const [editData, setEditData] = useState(null);
     const [isEditting, setIsEditting] = useState(false)
-    const [teachers, setTeachers] = useState([
-        {
-            id: "1",
-            nombre: "Maestro 1",
-            correo: "maestro1@correo.com",
-            grupos: [
-                { id: 1, nombre: "Grupo A", carrera: "Ingeniería", semestre: "5to" },
-                { id: 2, nombre: "Grupo B", carrera: "Sistemas", semestre: "3ro" }
-            ],
-            cubiculo: "1A"
-        },
-        {
-            id: "2",
-            nombre: "Maestro 2",
-            correo: "maestro2@correo.com",
-            grupos: [
-                { id: 3, nombre: "Grupo C", carrera: "Informática", semestre: "4to" },
-                { id: 4, nombre: "Grupo D", carrera: "Mecánica", semestre: "6to" }
-            ],
-            cubiculo: "2B"
-        },
-    ]);
+    const [teachers, setTeachers] = useState([]);
+    const [idEdited, setIdEdited] = useState(null);
+    const [grupos, setGrupos] = useState([]);
+    
 
     const getProfesores = async (activos) => {
         const response = await profesorService.getAll(activos);
-        console.log("REPONSE FRONT: ", response)
+        setTeachers(response)
+    }
+
+    const getGrupos = async () => {
+        const response = await obtenerGrupos();
+        const gruposActivos = response.filter(grupo => grupo.estado === true);
+        setGrupos(gruposActivos);
     }
 
     const getProfesorById = async (id) => {
@@ -48,8 +37,8 @@ const TeacherCrud = () => {
     }
 
     useEffect(()=>{
+        getGrupos();
         getProfesores(true);
-        getProfesorById(1);
     },[])
 
     const formatGruposForTable = (grupos) => {
@@ -59,18 +48,54 @@ const TeacherCrud = () => {
 
     const edit = (id) => {
         let dataAux = teachers.find(teacher => teacher.id == id);
+        const gruposDisponibles = grupos.filter(grupo => !dataAux.grupos.some(grupoProfesor => grupoProfesor.id === grupo.id));
+        setGrupos(gruposDisponibles);
+        setIdEdited(id)
         setEditData(dataAux);
         setIsEditting(true);
     }
 
-    const search = (value, filter) => {
-        console.log("SEARCH: ",value," ", filter)
+    const search = async (value, filter) => {
+        if(value == ""){
+            getProfesores(true);
+            return true;
+        }
+        if(filter == "nombre"){
+            const response = await profesorService.getByName(value)
+            console.log(response)
+            setTeachers(response)
+        }
+        if(filter == "correo"){
+            const response = await profesorService.getByEmail(value)
+            console.log(response)
+            setTeachers(response)
+        }
+        
     }
 
     const submit = async (formData) => {
         formData["activo"] = 1;
-        const response = await profesorService.create(formData);
-        console.log("REPONSE FRONT: ", response)
+        if(isEditting){
+            const response = await profesorService.update(formData, idEdited)
+            if(response.status == 400){
+                message.error(response.data)
+            }else{
+
+                message.success("Información actualizada")
+            }
+            getProfesores(true);
+            getGrupos();
+            clearForm();
+        }else{
+            const response = await profesorService.create(formData);
+            if(response.status == 400){
+                message.error(response.data)
+            }else{
+                message.success("Información registrada")
+            }
+            getProfesores(true);
+            getGrupos();
+        }
     }
 
     const deleteTeacher = (id, nombre) => {
@@ -86,13 +111,19 @@ const TeacherCrud = () => {
             cancelText: 'Cancelar',
             okType: 'danger',
             width: 400,
-            onOk() {
-                // Simular eliminación
-                const updatedTeachers = teachers.filter(teacher => teacher.id !== id);
-                setTeachers(updatedTeachers);
-                
-                // Mostrar mensaje de éxito
-                message.success(`Maestro "${nombre}" eliminado correctamente`);
+            async onOk() {
+                const response = await profesorService.delete(id)
+                console.log("DELETE RESPONSE: ", response);
+
+                if(response == ""){
+                    // Simular eliminación
+                    const updatedTeachers = teachers.filter(teacher => teacher.id !== id);
+                    setTeachers(updatedTeachers);
+                    // Mostrar mensaje de éxito
+                    message.success(`Maestro "${nombre}" eliminado correctamente`);
+                }else{
+                    message.error("No se puedo eliminar al profesor")
+                }
                 
                 // Si estábamos editando este registro, limpiar el formulario
                 if (editData && editData.id === id) {
@@ -138,14 +169,10 @@ const TeacherCrud = () => {
         }
     ];
 
-    const grupos = [
-    { id: 1, nombre: "Grupo A", carrera: "Ingeniería", semestre: "5to" },
-    { id: 2, nombre: "Grupo B", carrera: "Sistemas", semestre: "3ro" },
-];
-
     const clearForm = () => {
         setEditData(null);
         setIsEditting(false);
+        setIdEdited(null);
     }
 
     return (

@@ -6,19 +6,21 @@ import SolicitudesM from "../pages/Solicitudes/SolicitudesM";
 import SolicitudesA from "../pages/Solicitudes/SolicitudesA"
 import TeacherCrud from "../pages/TeacherCrud/TeacherCrud";
 import Alumnos from "../pages/Alumnos/Alumnos";
+import Login from "../pages/Login/Login";
 
 function Rutas() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<TeacherCrud />} />
+        <Route path='/' element={<Login />} />
+        <Route path="/profesores" element={<TeacherCrud />} />
         <Route path="/maestros" element={<TeacherCrud />} />
         <Route path="/grupos" element={<Grupos />} />
         <Route path="/usuarios" element={<Teachers />} />
         <Route path="/alumnos" element={<Alumnos />} />
         <Route path="/administradores" element={<Admins />} />
-        <Route path="solicitudesM" element={<SolicitudesM />} />
-        <Route path="solicitudesA" element={<SolicitudesA/>} />
+        <Route path="/solicitudesM" element={<SolicitudesM />} />
+        <Route path="/solicitudesA" element={<SolicitudesA/>} />
       </Routes>
     </BrowserRouter>
   );

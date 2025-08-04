@@ -1,0 +1,74 @@
+import axios from 'axios';
+
+const SOLICITUDES_BASE_URL = "http://localhost:8086/api/solicitud";
+
+const solicitudService = {
+  "pendientes": async () => {
+    try {
+      const idProfesor = localStorage.getItem('id');
+      const response = await axios.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/pendientes`);
+      return response.data;
+    } catch (error) {
+      return [{ errorCode: error.response?.status || 500 }];
+    }
+  },
+  "revFin": async () => {
+    try {
+      const idProfesor = localStorage.getItem('id');
+      const response = await axios.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/rev-fin`);
+      return response.data;
+    } catch (error) {
+      return [{ errorCode: error.response?.status || 500 }];
+    }
+  },
+  "estado": async (id, nuevoEstado) => {
+  try {
+    const response = await axios.put(
+      `${SOLICITUDES_BASE_URL}/${id}/estado`,`${nuevoEstado}`, 
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar estado", error);
+    return { errorCode: error.response?.status || 500 };
+  }
+},
+"obtenerP": async (matricula) => {
+    try {
+      const response = await axios.get(`${SOLICITUDES_BASE_URL}/profesores/${matricula}`);
+      return response.data;
+    } catch (error) {
+      return [{ errorCode: error.response?.status || 500 }];
+    }
+  },
+  "obtenerS": async (matricula) => {
+    try {
+      const response = await axios.get(`${SOLICITUDES_BASE_URL}/alumno/${matricula}/detalle`);
+      return response.data;
+    } catch (error) {
+      return [{ errorCode: error.response?.status || 500 }];
+    }
+  },
+  "crearSolicitud": async (datosSolicitud) => {
+  try {
+    const response = await axios.post(`${SOLICITUDES_BASE_URL}`, datosSolicitud,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear solicitud", error);
+    throw error;
+  }
+},
+
+};
+
+export default solicitudService;
