@@ -27,7 +27,7 @@ export const guardarAlumno = async (alumno) => {
     }
   } catch (error) {
     console.error("Error al guardar alumno:", error);
-    throw error.response?.data?.message || "Error al guardar alumno";
+    throw error.response?.data?.message || "Erroorr al guardar alumno";
   }
 };
 

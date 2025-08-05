@@ -52,7 +52,7 @@ const [alumnosOriginales, setAlumnosOriginales] = useState([]);
     setStudents(data);
     setAlumnosOriginales(data); // Guardamos todos los alumnos originales
   } catch (error) {
-    message.error('Error al cargar alumnos');
+    message.error('Error aal cargar alumnos');
   } finally {
     setLoading(false);
   }
