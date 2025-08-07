@@ -179,7 +179,7 @@ const SolicitudesM = () => {
 
   return (
     <>
-      <Header />
+      <Header nameSection={"Bienvenido"} />
       <div className="solicitudes-container">
         {error && <div className="error-message">{error}</div>}
         
