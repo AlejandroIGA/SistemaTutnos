@@ -1,10 +1,10 @@
-import axios from 'axios';
+import api from '../axiosConfig'
 
 const GRUPOS_BASE_URL = "http://localhost:8081/api/grupo"
 
 export const obtenerGrupos = async () => {
   try {
-    const response = await axios.get(`${GRUPOS_BASE_URL}`);
+    const response = await api.get(`${GRUPOS_BASE_URL}`);
     return response.data;
   } catch (error) {
     console.error("Error al obtener grupos:", error);
@@ -14,7 +14,7 @@ export const obtenerGrupos = async () => {
 
 export const obtenerGrupoPorId = async (id) => {
   try {
-    const response = await axios.get(`${GRUPOS_BASE_URL}/${id}`);
+    const response = await api.get(`${GRUPOS_BASE_URL}/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error al obtener grupo con id ${id}:`, error);
@@ -25,7 +25,7 @@ export const obtenerGrupoPorId = async (id) => {
 
 export const obtenerGrupoPorCarrera = async (carrera) => {
   try {
-    const response = await axios.get(`${GRUPOS_BASE_URL}/carrera/${carrera}`);
+    const response = await api.get(`${GRUPOS_BASE_URL}/carrera/${carrera}`);
     return response.data;
   } catch (error) {
     console.error(`Error al obtener grupo por carrera ${carrera}:`, error);
@@ -36,7 +36,7 @@ export const obtenerGrupoPorCarrera = async (carrera) => {
 
 export const obtenerGrupoPorNombre = async (nombre) => {
   try {
-    const response = await axios.get(`${GRUPOS_BASE_URL}/nombre-grupo/${nombre}`);
+    const response = await api.get(`${GRUPOS_BASE_URL}/nombre-grupo/${nombre}`);
     return response.data;
   } catch (error) {
     console.error(`Error al obtener grupo por nombre ${nombre}:`, error);
@@ -46,7 +46,7 @@ export const obtenerGrupoPorNombre = async (nombre) => {
 
 export const agregarGrupo = async (grupo) => {
   try {
-    const response = await axios.post(`${GRUPOS_BASE_URL}`, grupo);
+    const response = await api.post(`${GRUPOS_BASE_URL}`, grupo);
     console.log("Grupo agregado:", response.data);
     return response.data;
   } catch (error) {
@@ -57,7 +57,7 @@ export const agregarGrupo = async (grupo) => {
 
 export const actualizarGrupo = async (id, grupo) => {
   try {
-    const response = await axios.put(`${GRUPOS_BASE_URL}/${id}`, grupo);
+    const response = await api.put(`${GRUPOS_BASE_URL}/${id}`, grupo);
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar grupo con id ${id}:`, error);
@@ -67,7 +67,7 @@ export const actualizarGrupo = async (id, grupo) => {
 
 export const eliminarGrupo = async (id) => {
   try {
-    await axios.delete(`${GRUPOS_BASE_URL}/${id}`);
+    await api.delete(`${GRUPOS_BASE_URL}/${id}`);
     return true;
   } catch (error) {
     console.error(`Error al eliminar grupo con id ${id}:`, error);

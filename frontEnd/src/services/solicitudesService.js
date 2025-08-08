@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../axiosConfig'
 
 const SOLICITUDES_BASE_URL = "http://localhost:8086/api/solicitud";
 
@@ -6,7 +6,7 @@ const solicitudService = {
   "pendientes": async () => {
     try {
       const idProfesor = localStorage.getItem('id');
-      const response = await axios.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/pendientes`);
+      const response = await api.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/pendientes`);
       return response.data;
     } catch (error) {
       return [{ errorCode: error.response?.status || 500 }];
@@ -15,31 +15,31 @@ const solicitudService = {
   "revFin": async () => {
     try {
       const idProfesor = localStorage.getItem('id');
-      const response = await axios.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/rev-fin`);
+      const response = await api.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/rev-fin`);
       return response.data;
     } catch (error) {
       return [{ errorCode: error.response?.status || 500 }];
     }
   },
   "estado": async (id, nuevoEstado) => {
-  try {
-    const response = await axios.put(
-      `${SOLICITUDES_BASE_URL}/${id}/estado`,`${nuevoEstado}`, 
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error al actualizar estado", error);
-    return { errorCode: error.response?.status || 500 };
-  }
-},
-"obtenerP": async (matricula) => {
     try {
-      const response = await axios.get(`${SOLICITUDES_BASE_URL}/profesores/${matricula}`);
+      const response = await api.put(
+        `${SOLICITUDES_BASE_URL}/${id}/estado`, `${nuevoEstado}`,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error al actualizar estado", error);
+      return { errorCode: error.response?.status || 500 };
+    }
+  },
+  "obtenerP": async (matricula) => {
+    try {
+      const response = await api.get(`${SOLICITUDES_BASE_URL}/profesores/${matricula}`);
       return response.data;
     } catch (error) {
       return [{ errorCode: error.response?.status || 500 }];
@@ -47,27 +47,27 @@ const solicitudService = {
   },
   "obtenerS": async (matricula) => {
     try {
-      const response = await axios.get(`${SOLICITUDES_BASE_URL}/alumno/${matricula}/detalle`);
+      const response = await api.get(`${SOLICITUDES_BASE_URL}/alumno/${matricula}/detalle`);
       return response.data;
     } catch (error) {
       return [{ errorCode: error.response?.status || 500 }];
     }
   },
   "crearSolicitud": async (datosSolicitud) => {
-  try {
-    const response = await axios.post(`${SOLICITUDES_BASE_URL}`, datosSolicitud,
-      {
-        headers: {
-          'Content-Type': 'application/json'
+    try {
+      const response = await api.post(`${SOLICITUDES_BASE_URL}`, datosSolicitud,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error al crear solicitud", error);
-    throw error;
-  }
-},
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error al crear solicitud", error);
+      throw error;
+    }
+  },
 
 };
 

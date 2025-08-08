@@ -80,7 +80,7 @@ const CallbackPage = () => {
         localStorage.setItem('username', payload.username)
         
         // 6. Aplicar lógica de roles y navegación
-        if (userRole === 'Profesor' || roles.includes('ROLE_PROFESOR')) {
+        if (userRole === 'maestro' || roles.includes('ROLE_PROFESOR')) {
           localStorage.setItem('id', userId || username);
           localStorage.setItem('user_role', 'Profesor');
           // alert('Login exitoso'); // Reemplazar con modal
@@ -127,7 +127,7 @@ const CallbackPage = () => {
         <div className="login-box">
           <h2>Error de Autenticación</h2>
           <p>{error}</p>
-          <button onClick={() => navigate('/login')}>
+          <button onClick={() => navigate('/')}>
             Volver al Login
           </button>
         </div>
