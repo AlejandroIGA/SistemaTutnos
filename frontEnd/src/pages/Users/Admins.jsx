@@ -5,12 +5,14 @@ import UserForm from "../../components/UserForms/UserForm";
 import PersonIcon from "@mui/icons-material/Person";
 import usuarioService from "../../services/usuarioService";
 import { useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { EditOutlined } from '@ant-design/icons';
 import bcrypt from 'bcryptjs';
 
 const Admins = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const formRef = useRef();
 
   useEffect(() => {
     const fetchUsuarios = async () => {
@@ -49,6 +51,7 @@ const Admins = () => {
           setUsuarios((prevUsuarios) => prevUsuarios.map((u) => u.id === editingUser.id ? response : u));
           setEditingUser(null);
           message.success("Usuario actualizado exitosamente");
+          if (formRef.current) formRef.current.resetFields();
         }
       } else {
         // Crear nuevo usuario
@@ -64,6 +67,7 @@ const Admins = () => {
         } else {
           setUsuarios((prevUsuarios) => [...prevUsuarios, response]);
           message.success("Usuario creado exitosamente");
+          if (formRef.current) formRef.current.resetFields();
         }
       }
     } catch (error) {
@@ -165,6 +169,7 @@ const Admins = () => {
               password: '',
               password2: '',
             } : undefined}
+            formRef={formRef}
           />
           {editingUser && (
             <Button onClick={handleCancelarEdicion} style={{ marginBottom: 16 }}>

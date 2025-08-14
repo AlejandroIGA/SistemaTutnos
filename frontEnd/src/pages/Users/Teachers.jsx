@@ -4,19 +4,21 @@ import usuarioService from "../../services/usuarioService";
 import bcrypt from 'bcryptjs';
 import { Table, message, Button } from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import PersonIcon from "@mui/icons-material/Person";
 
 const Teachers = () => {
   const [maestros, setMaestros] = useState([]);
+  const formRef = useRef();
 
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
         const response = await usuarioService.getAll();
-        // Filtrar solo maestros
-        const maestros = Array.isArray(response) ? response.filter(u => u.rol === "Maestro") : [];
+        const maestros = Array.isArray(response)
+          ? response.filter(u => u.rol === "Maestro")
+          : [];
         setMaestros(maestros);
       } catch (error) {
         console.error("Error fetching teachers:", error);
@@ -44,6 +46,7 @@ const Teachers = () => {
       } else {
         setMaestros((prevUsuarios) => [...prevUsuarios, response]);
         message.success("Usuario creado exitosamente");
+        if (formRef.current) formRef.current.resetFields();
       }
     } catch (error) {
       message.error("Error al guardar usuario");
@@ -125,6 +128,7 @@ const Teachers = () => {
         <div>
           <TeachersForm
             onSubmit={handleCrearUsuario}
+            formRef={formRef}
           />
           <Table dataSource={dataSource} columns={columns} />
         </div>

@@ -3,8 +3,14 @@ import React, { useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 
-const UserForm = ({ onSubmit, initialValues }) => {
+const UserForm = ({ onSubmit, initialValues, formRef }) => {
   const [form] = Form.useForm();
+  // Permitir acceso al form desde el padre
+  useEffect(() => {
+    if (formRef) {
+      formRef.current = form;
+    }
+  }, [formRef, form]);
 
   useEffect(() => {
     if (initialValues) {

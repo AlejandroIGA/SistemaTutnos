@@ -5,8 +5,14 @@ import profesorService from "../../services/profesorService";
 
 const { Option } = Select;
 
-const TeachersForm = ({ onSubmit }) => {
+const TeachersForm = ({ onSubmit, formRef }) => {
   const [form] = Form.useForm();
+  // Permitir acceso al form desde el padre
+  useEffect(() => {
+    if (formRef) {
+      formRef.current = form;
+    }
+  }, [formRef, form]);
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +21,8 @@ const TeachersForm = ({ onSubmit }) => {
       setLoading(true);
       const res = await profesorService.getAll(true);
       if (Array.isArray(res)) {
-        setTeachers(res);
+        // Solo mostrar maestros con idUsuario === 0
+        setTeachers(res.filter(t => t.idUsuario === 0));
       } else {
         setTeachers([]);
       }

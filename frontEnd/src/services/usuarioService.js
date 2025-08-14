@@ -53,7 +53,7 @@ const usuarioService = {
         } catch (error) {
             return [{ "errorCode": error.status }]
         }
-    }
+    },
 };
 
 export default usuarioService;
