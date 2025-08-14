@@ -23,10 +23,11 @@ const Teachers = () => {
     fetchTeachers();
   }, []);
 
-    const handleCrearUsuario = async (data) => {
+  const handleCrearUsuario = async (data) => {
     try {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(data.password, salt);
+      // Crear nuevo usuario
       const nuevoUsuario = {
         nombre: data.maestroNombre,
         contrasena: hashedPassword,
@@ -34,21 +35,16 @@ const Teachers = () => {
         rol: "Maestro",
         idProfesor: data.maestroId,
       };
-      
-      console.log("Nuevo usuario:", nuevoUsuario);
-
       const response = await usuarioService.create(nuevoUsuario);
-
       if (response.errorCode) {
-        console.error("Error al crear usuario:", response.errorCode);
         message.error("Error al crear usuario: " + response.errorCode);
       } else {
         setMaestros((prevUsuarios) => [...prevUsuarios, response]);
-        console.log("Usuario creado exitosamente:", response);
         message.success("Usuario creado exitosamente");
       }
     } catch (error) {
-      console.error("Error al crear usuario:", error);
+      message.error("Error al guardar usuario");
+      console.error("Error al guardar usuario:", error);
     }
   };
 
@@ -68,6 +64,8 @@ const Teachers = () => {
     }
   };
 
+  // Eliminada funcionalidad de editar usuario
+
   const dataSource = maestros.map((usuario) => ({
     key: usuario.id,
     name: usuario.nombre,
@@ -75,9 +73,6 @@ const Teachers = () => {
     role: usuario.rol,
     actions: (
       <div>
-        <button onClick={() => console.log(`Editar usuario ${usuario.id}`)}>
-          Editar
-        </button>
         <button onClick={() => handleEliminarUsuario(usuario.id)}>
           Eliminar
         </button>
@@ -120,7 +115,9 @@ const Teachers = () => {
       name="Usuarios"
       content={
         <div>
-          <TeachersForm onSubmit={handleCrearUsuario} />
+          <TeachersForm
+            onSubmit={handleCrearUsuario}
+          />
           <Table dataSource={dataSource} columns={columns} />
         </div>
       }
