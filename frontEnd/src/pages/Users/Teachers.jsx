@@ -2,19 +2,24 @@ import PanelLayout from "../../layout/PanelLayout";
 import TeachersForm from "../../components/UserForms/TeachersForm";
 import usuarioService from "../../services/usuarioService";
 import bcrypt from 'bcryptjs';
-import { Table, message } from "antd";
-import { useState, useEffect } from "react";
+import { Table, message, Button } from "antd";
+import { DeleteOutlined } from '@ant-design/icons';
+import { useState, useEffect, useRef } from "react";
 
 import PersonIcon from "@mui/icons-material/Person";
 
 const Teachers = () => {
   const [maestros, setMaestros] = useState([]);
+  const formRef = useRef();
 
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
         const response = await usuarioService.getAll();
-        setMaestros(response);
+        const maestros = Array.isArray(response)
+          ? response.filter(u => u.rol === "Maestro")
+          : [];
+        setMaestros(maestros);
       } catch (error) {
         console.error("Error fetching teachers:", error);
       }
@@ -23,31 +28,49 @@ const Teachers = () => {
     fetchTeachers();
   }, []);
 
-    const handleCrearUsuario = async (data) => {
+  const handleCrearUsuario = async (data) => {
     try {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(data.password, salt);
+      // Crear nuevo usuario
       const nuevoUsuario = {
-        nombre: data.name,
+        nombre: data.maestroNombre,
         contrasena: hashedPassword,
         estatus: true,
         rol: "Maestro",
+        idProfesor: data.maestroId,
       };
-
       const response = await usuarioService.create(nuevoUsuario);
-
       if (response.errorCode) {
-        console.error("Error al crear usuario:", response.errorCode);
         message.error("Error al crear usuario: " + response.errorCode);
       } else {
         setMaestros((prevUsuarios) => [...prevUsuarios, response]);
-        console.log("Usuario creado exitosamente:", response);
         message.success("Usuario creado exitosamente");
+        if (formRef.current) formRef.current.resetFields();
       }
     } catch (error) {
-      console.error("Error al crear usuario:", error);
+      message.error("Error al guardar usuario");
+      console.error("Error al guardar usuario:", error);
     }
   };
+
+  // Función para eliminar usuario
+  const handleEliminarUsuario = async (id) => {
+    try {
+      const response = await usuarioService.delete(id);
+      if (response && response.errorCode) {
+        message.error("Error al eliminar usuario: " + response.errorCode);
+      } else {
+        setMaestros((prevUsuarios) => prevUsuarios.filter((u) => u.id !== id));
+        message.success("Usuario eliminado exitosamente");
+      }
+    } catch (error) {
+      message.error("Error al eliminar usuario");
+      console.error("Error al eliminar usuario:", error);
+    }
+  };
+
+  // Eliminada funcionalidad de editar usuario
 
   const dataSource = maestros.map((usuario) => ({
     key: usuario.id,
@@ -55,13 +78,15 @@ const Teachers = () => {
     status: usuario.estatus ? "Activo" : "Inactivo",
     role: usuario.rol,
     actions: (
-      <div>
-        <button onClick={() => console.log(`Editar usuario ${usuario.id}`)}>
-          Editar
-        </button>
-        <button onClick={() => console.log(`Eliminar usuario ${usuario.id}`)}>
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <Button 
+          onClick={() => handleEliminarUsuario(usuario.id)} 
+          icon={<DeleteOutlined />} 
+          size="small"
+          className="boton-eliminar"
+        >
           Eliminar
-        </button>
+        </Button>
       </div>
     ),
   }));
@@ -101,7 +126,10 @@ const Teachers = () => {
       name="Usuarios"
       content={
         <div>
-          <TeachersForm onSubmit={handleCrearUsuario} />
+          <TeachersForm
+            onSubmit={handleCrearUsuario}
+            formRef={formRef}
+          />
           <Table dataSource={dataSource} columns={columns} />
         </div>
       }

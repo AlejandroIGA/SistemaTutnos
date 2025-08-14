@@ -1,13 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Select } from "antd";
 import { CheckOutlined  } from '@ant-design/icons';
+import profesorService from "../../services/profesorService";
 
-const TeachersForm = ({ onSubmit }) => {
+const { Option } = Select;
+
+const TeachersForm = ({ onSubmit, formRef }) => {
   const [form] = Form.useForm();
+  // Permitir acceso al form desde el padre
+  useEffect(() => {
+    if (formRef) {
+      formRef.current = form;
+    }
+  }, [formRef, form]);
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      setLoading(true);
+      const res = await profesorService.getAll(true);
+      if (Array.isArray(res)) {
+        // Solo mostrar maestros con idUsuario === 0
+        setTeachers(res.filter(t => t.idUsuario === 0));
+      } else {
+        setTeachers([]);
+      }
+      setLoading(false);
+    };
+    fetchTeachers();
+  }, []);
 
   const handleFinish = (values) => {
-    console.log("Form data:", values);
-    onSubmit?.(values); // si se pasó una función onSubmit, la ejecuta
+    // Parsear el valor seleccionado para obtener id y nombre
+    let maestro = { id: '', nombre: '' };
+    try {
+      maestro = JSON.parse(values.name);
+    } catch (e) {}
+    const newValues = {
+      ...values,
+      maestroId: maestro.id,
+      maestroNombre: maestro.nombre,
+    };
+    console.log("Form data:", newValues);
+    onSubmit?.(newValues);
   };
 
   return (
@@ -22,10 +58,10 @@ const TeachersForm = ({ onSubmit }) => {
         label="Seleccionar Maestro"
         rules={[{ required: true, message: "Seleccionar Maestro" }]}
       >
-        <Select placeholder="Selecciona un maestro para su alta">
-          <Option value="Isaac Newton">Isaac Newton</Option>
-          <Option value="Stephen Hawking ">Stephen Hawking </Option>
-          <Option value="Marie Curie">Marie Curie</Option>
+        <Select placeholder="Selecciona un maestro para su alta" loading={loading} allowClear>
+          {teachers.map((teacher) => (
+            <Option key={teacher.id} value={JSON.stringify({ id: teacher.id, nombre: teacher.nombre })}>{teacher.nombre}</Option>
+          ))}
         </Select>
       </Form.Item>
 

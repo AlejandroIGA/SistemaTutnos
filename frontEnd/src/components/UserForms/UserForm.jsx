@@ -1,13 +1,27 @@
-import React from "react";
+
+import React, { useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 
-const UserForm = ({ onSubmit }) => {
+const UserForm = ({ onSubmit, initialValues, formRef }) => {
   const [form] = Form.useForm();
+  // Permitir acceso al form desde el padre
+  useEffect(() => {
+    if (formRef) {
+      formRef.current = form;
+    }
+  }, [formRef, form]);
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    } else {
+      form.resetFields();
+    }
+  }, [initialValues, form]);
 
   const handleFinish = (values) => {
-    console.log("Form data:", values);
-    onSubmit?.(values); // si se pasó una función onSubmit, la ejecuta
+    onSubmit?.(values);
   };
 
   return (
