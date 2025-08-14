@@ -21,7 +21,8 @@ const SideBar = () => {
         '/maestros': '1',
         '/alumnos': '2',
         '/grupos': '3',
-        '/usuarios': '4'
+        '/usuarios': '4',
+        '/administradores': '5',
     };
     
     // Obtener la clave seleccionada basada en la ruta actual
@@ -49,6 +50,11 @@ const SideBar = () => {
             key: '4', 
             icon: <PersonIcon />, 
             label: <Link to="/usuarios">Usuarios</Link>
+        },
+        {
+            key: '5',
+            icon: <PersonIcon />,
+            label: <Link to="/administradores">Administradores</Link>
         },
     ];
 
