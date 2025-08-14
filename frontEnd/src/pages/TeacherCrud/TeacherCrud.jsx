@@ -183,7 +183,12 @@ const TeacherCrud = () => {
                 <div>
                     <TeacherFormCrud editData={editData} clearForm={clearForm} onSearch={search} onSubmit={submit} grupos={grupos} isEditting={isEditting}/>
                     <br></br>
-                    <Table columns={columnas} dataSource={teachers} rowKey="id" pagination={{pageSize:10}} />
+                    {
+                        teachers == "" ? 
+                        <h2>No hay maestros registrados</h2>
+                        :
+                        <Table columns={columnas} dataSource={teachers} rowKey="id" pagination={{pageSize:10}} />
+                    }
                 </div>
             }
         />
