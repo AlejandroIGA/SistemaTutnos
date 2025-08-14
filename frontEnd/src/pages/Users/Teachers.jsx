@@ -2,7 +2,8 @@ import PanelLayout from "../../layout/PanelLayout";
 import TeachersForm from "../../components/UserForms/TeachersForm";
 import usuarioService from "../../services/usuarioService";
 import bcrypt from 'bcryptjs';
-import { Table, message } from "antd";
+import { Table, message, Button } from "antd";
+import { DeleteOutlined } from '@ant-design/icons';
 import { useState, useEffect } from "react";
 
 import PersonIcon from "@mui/icons-material/Person";
@@ -14,7 +15,9 @@ const Teachers = () => {
     const fetchTeachers = async () => {
       try {
         const response = await usuarioService.getAll();
-        setMaestros(response);
+        // Filtrar solo maestros
+        const maestros = Array.isArray(response) ? response.filter(u => u.rol === "Maestro") : [];
+        setMaestros(maestros);
       } catch (error) {
         console.error("Error fetching teachers:", error);
       }
@@ -72,10 +75,15 @@ const Teachers = () => {
     status: usuario.estatus ? "Activo" : "Inactivo",
     role: usuario.rol,
     actions: (
-      <div>
-        <button onClick={() => handleEliminarUsuario(usuario.id)}>
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <Button 
+          onClick={() => handleEliminarUsuario(usuario.id)} 
+          icon={<DeleteOutlined />} 
+          size="small"
+          className="boton-eliminar"
+        >
           Eliminar
-        </button>
+        </Button>
       </div>
     ),
   }));

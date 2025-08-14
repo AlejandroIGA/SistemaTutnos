@@ -1,18 +1,24 @@
-import { Table, message } from "antd";
+import { Table, message, Button } from "antd";
+import { DeleteOutlined } from '@ant-design/icons';
 import PanelLayout from "../../layout/PanelLayout";
 import UserForm from "../../components/UserForms/UserForm";
 import PersonIcon from "@mui/icons-material/Person";
 import usuarioService from "../../services/usuarioService";
 import { useState, useEffect } from "react";
+import { EditOutlined } from '@ant-design/icons';
+import bcrypt from 'bcryptjs';
 
 const Admins = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
         const response = await usuarioService.getAll();
-        setUsuarios(response);
+        // Filtrar solo administradores
+        const admins = Array.isArray(response) ? response.filter(u => u.rol === "Admin") : [];
+        setUsuarios(admins);
       } catch (error) {
         console.error("Error fetching usuarios:", error);
       }
@@ -23,26 +29,71 @@ const Admins = () => {
 
   const handleCrearUsuario = async (data) => {
     try {
-      const nuevoUsuario = {
-        nombre: data.name,
-        contrasena: data.password,
-        estatus: true,
-        rol: "Administrador",
-      };
 
-      const response = await usuarioService.create(nuevoUsuario);
-
-      if (response.errorCode) {
-        console.error("Error al crear usuario:", response.errorCode);
-        message.error("Error al crear usuario: " + response.errorCode);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(data.password, salt);
+            
+      if (editingUser) {
+        // Editar usuario existente
+        const usuarioActualizado = {
+          ...editingUser,
+          nombre: data.name,
+          contrasena: hashedPassword,
+          estatus: true,
+          rol: "Admin",
+        };
+        const response = await usuarioService.edit(editingUser.id,usuarioActualizado);
+        if (response && response.errorCode) {
+          message.error("Error al actualizar usuario: " + response.errorCode);
+        } else {
+          setUsuarios((prevUsuarios) => prevUsuarios.map((u) => u.id === editingUser.id ? response : u));
+          setEditingUser(null);
+          message.success("Usuario actualizado exitosamente");
+        }
       } else {
-        setUsuarios((prevUsuarios) => [...prevUsuarios, response]);
-        console.log("Usuario creado exitosamente:", response);
-        message.success("Usuario creado exitosamente");
+        // Crear nuevo usuario
+        const nuevoUsuario = {
+          nombre: data.name,
+          contrasena: hashedPassword,
+          estatus: true,
+          rol: "Admin",
+        };
+        const response = await usuarioService.create(nuevoUsuario);
+        if (response.errorCode) {
+          message.error("Error al crear usuario: " + response.errorCode);
+        } else {
+          setUsuarios((prevUsuarios) => [...prevUsuarios, response]);
+          message.success("Usuario creado exitosamente");
+        }
       }
     } catch (error) {
-      console.error("Error al crear usuario:", error);
+      message.error("Error al guardar usuario");
+      console.error("Error al guardar usuario:", error);
     }
+  };
+
+  const handleCancelarEdicion = () => {
+    setEditingUser(null);
+  };
+
+  // Función para eliminar usuario
+  const handleEliminarUsuario = async (id) => {
+    try {
+      const response = await usuarioService.delete(id);
+      if (response && response.errorCode) {
+        message.error("Error al eliminar usuario: " + response.errorCode);
+      } else {
+        setUsuarios((prevUsuarios) => prevUsuarios.filter((u) => u.id !== id));
+        message.success("Usuario eliminado exitosamente");
+      }
+    } catch (error) {
+      message.error("Error al eliminar usuario");
+      console.error("Error al eliminar usuario:", error);
+    }
+  };
+
+  const handleEditarUsuario = (usuario) => {
+    setEditingUser(usuario);
   };
 
   const dataSource = usuarios.map((usuario) => ({
@@ -51,13 +102,23 @@ const Admins = () => {
     status: usuario.estatus ? "Activo" : "Inactivo",
     role: usuario.rol,
     actions: (
-      <div>
-        <button onClick={() => console.log(`Editar usuario ${usuario.id}`)}>
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <Button 
+          onClick={() => handleEditarUsuario(usuario)} 
+          icon={<EditOutlined />} 
+          size="small"
+          className="boton-editar"
+        >
           Editar
-        </button>
-        <button onClick={() => console.log(`Eliminar usuario ${usuario.id}`)}>
+        </Button>
+        <Button 
+          onClick={() => handleEliminarUsuario(usuario.id)} 
+          icon={<DeleteOutlined />} 
+          size="small"
+          className="boton-eliminar"
+        >
           Eliminar
-        </button>
+        </Button>
       </div>
     ),
   }));
@@ -97,7 +158,19 @@ const Admins = () => {
       name="Administradores"
       content={
         <div>
-          <UserForm onSubmit={handleCrearUsuario} />
+          <UserForm 
+            onSubmit={handleCrearUsuario}
+            initialValues={editingUser ? {
+              name: editingUser.nombre,
+              password: '',
+              password2: '',
+            } : undefined}
+          />
+          {editingUser && (
+            <Button onClick={handleCancelarEdicion} style={{ marginBottom: 16 }}>
+              Cancelar edición
+            </Button>
+          )}
           <Table dataSource={dataSource} columns={columns} />
         </div>
       }
