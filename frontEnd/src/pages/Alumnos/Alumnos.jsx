@@ -1,4 +1,5 @@
-import { useState } from 'react';
+// src/components/Alumnos.jsx
+import React, { useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -22,101 +23,146 @@ import SchoolIcon from '@mui/icons-material/School';
 import PanelLayout from '../../layout/PanelLayout';
 import './Alumnos.css';
 
-const { Option } = Select;
+// Importa tus servicios
+import { obtenerAlumnos, guardarAlumno, eliminarAlumno } from '../../services/alumnoService';
+import { obtenerGrupos } from '../../services/grupoService';
 
-const initialStudents = [
-  {
-    id: '2130123456',
-    nombre: 'Juan Pérez López',
-    grupo: 'TI‑501',
-    grupos: ['TI‑501'],
-  },
-  {
-    id: '2139879872',
-    nombre: 'María García Ruiz',
-    grupo: 'TI‑602',
-    grupos: ['TI‑602'],
-  },
-  {
-    id: '21303146378',
-    nombre: 'Carlos Rodríguez',
-    grupo: 'TI‑501',
-    grupos: ['TI‑501'],
-  },
-  {
-    id: '21300001234',
-    nombre: 'Ana Martínez Silva',
-    grupo: 'TI‑503',
-    grupos: ['TI‑503'],
-  },
-];
+const { Option } = Select;
 
 const Alumnos = () => {
   const [form] = Form.useForm();
-  const [students, setStudents] = useState(initialStudents);
-  const [filterBy, setFilterBy] = useState('nombre');
+  const [students, setStudents] = useState([]);
+  const [filterBy, setFilterBy] = useState('todos');
   const [searchValue, setSearchValue] = useState('');
+  const [loading, setLoading] = useState(false);
+const [grupos, setGrupos] = useState([]);
+const nombresUnicos = [...new Map(grupos.map(g => [g.nombre, g])).values()];
+const [alumnosOriginales, setAlumnosOriginales] = useState([]);
 
+  // Cargar alumnos al montar el componente
+  useEffect(() => {
+    cargarAlumnos();
+    cargarGrupos();
+  }, []);
+
+  const cargarAlumnos = async () => {
+  setLoading(true);
+  try {
+    const data = await obtenerAlumnos();
+    setStudents(data);
+    setAlumnosOriginales(data); // Guardamos todos los alumnos originales
+  } catch (error) {
+    message.error('Error aal cargar alumnos');
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const cargarGrupos = async () => {
+  try {
+    const data = await obtenerGrupos();
+    setGrupos(data);
+  } catch (error) {
+    message.error("Error al cargar grupos desde la base de datos");
+  }
+};
+
+
+  // Buscar alumnos filtrados en el estado local
   const handleSearch = () => {
-    if (!searchValue) {
-      message.info('Escribe algo para buscar 🙂');
-      return;
+  if (filterBy !== 'todos' && !searchValue.trim()) {
+    message.warning('Debes escribir algo para buscar');
+    return;
+  }
+
+  if (filterBy === 'todos') {
+    setStudents(alumnosOriginales);
+    return;
+  }
+
+  const match = alumnosOriginales.filter((s) => {
+    const field = s[filterBy];
+    if (Array.isArray(field)) {
+      return field.some((g) =>
+        g.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    } else if (field) {
+      return field.toString().toLowerCase().includes(searchValue.toLowerCase());
     }
-    const match = students.filter((s) =>
-      String(s[filterBy])
-        .toLowerCase()
-        .includes(searchValue.toLowerCase()),
-    );
+    return false;
+  });
+
+  if (match.length === 0) {
+    message.info('No se encontraron registros');
+  } else {
     message.success(`Encontrados ${match.length} registro(s)`);
-    setStudents(match);
+  }
+
+  setStudents(match);
+};
+
+
+
+  // Guardar o actualizar alumno (con backend)
+  const handleSubmit = async (values) => {
+  const alumno = {
+    id: values.id,  // <-- Asegúrate de capturarlo
+    matricula: values.matricula,
+    nombre: values.nombreCompleto,
+    grupo: values.grupo,
   };
 
-  const handleSubmit = (values) => {
-    const exists = students.some((s) => s.id === values.matricula);
-    const data = {
-      id: values.matricula,
-      nombre: values.nombreCompleto,
-      grupo: values.grupo,
-      grupos: values.grupos,
-    };
-    const newList = exists
-      ? students.map((s) => (s.id === data.id ? data : s))
-      : [...students, data];
-
-    setStudents(newList);
+  try {
+    await guardarAlumno(alumno);
+    message.success('Alumno guardado/actualizado correctamente');
     form.resetFields();
-    message.success(exists ? 'Alumno actualizado' : 'Alumno guardado');
-  };
+    await cargarAlumnos();
+  } catch (error) {
+    message.error('Error guardando alumno');
+  }
+};
 
+
+  // Eliminar alumno (con backend)
   const handleDelete = (record) => {
     Modal.confirm({
       title: '¿Estás seguro?',
       content: (
         <div>
-          <p>¿Deseas eliminar al alumno <strong>{record.nombre}</strong>?</p>
-          <p style={{ fontSize: '13px', color: '#888' }}>Esta acción no se puede deshacer.</p>
+          <p>
+            ¿Deseas eliminar al alumno <strong>{record.nombre}</strong>?
+          </p>
+          <p style={{ fontSize: '13px', color: '#888' }}>
+            Esta acción no se puede deshacer.
+          </p>
         </div>
       ),
       okText: 'Eliminar',
       okType: 'danger',
       cancelText: 'Cancelar',
-      onOk: () => {
-        setStudents((prev) => prev.filter((s) => s.id !== record.id));
-        message.success(`Alumno "${record.nombre}" eliminado`);
+      async onOk() {
+        try {
+          await eliminarAlumno(record.id);
+          message.success(`Alumno "${record.nombre}" eliminado`);
+          await cargarAlumnos();
+        } catch (error) {
+          message.error('Error al eliminar alumno');
+        }
       },
     });
   };
 
   const columns = [
-    { title: 'Matrícula', dataIndex: 'id', key: 'id' },
+    { title: 'Matrícula', dataIndex: 'matricula', key: 'matricula' },
     { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
-    { title: 'Grupo', dataIndex: 'grupo', key: 'grupo' },
+    
     {
-      title: 'Grupos',
-      dataIndex: 'grupos',
-      key: 'grupos',
-      render: (grupos) => grupos.join(', '),
-    },
+  title: 'Grupo',
+  dataIndex: 'grupo',
+  key: 'grupo',
+  render: (grupo) => Array.isArray(grupo) ? grupo.join(', ') : (grupo || ''),
+},
+
     {
       title: 'Acciones',
       key: 'action',
@@ -127,14 +173,17 @@ const Alumnos = () => {
             size="small"
             icon={<EditOutlined />}
             className="btn-edit"
-            onClick={() =>
-              form.setFieldsValue({
-                matricula: record.id,
-                nombreCompleto: record.nombre,
-                grupo: record.grupo,
-                grupos: record.grupos,
-              })
-            }
+            
+              onClick={() =>
+  form.setFieldsValue({
+    id: record.id,
+    matricula: record.matricula,
+    nombreCompleto: record.nombre,
+grupo: record.grupo || '',
+  })
+}
+
+            
           >
             Editar
           </Button>
@@ -163,7 +212,7 @@ const Alumnos = () => {
           <Row gutter={16} align="middle">
             <Col flex="auto">
               <Input
-                placeholder="Buscar por nombre, correo o grupo"
+                placeholder="Buscar por nombre, matrícula o grupo"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 allowClear
@@ -181,12 +230,21 @@ const Alumnos = () => {
           </Row>
 
           <Radio.Group
-            className="radio-filter"
-            value={filterBy}
-            onChange={(e) => setFilterBy(e.target.value)}
-          >
+  className="radio-filter"
+  value={filterBy}
+  onChange={(e) => {
+    const val = e.target.value;
+    setFilterBy(val);
+    if (val === 'todos') {
+      setSearchValue(''); // Limpiar el buscador
+      setStudents(alumnosOriginales); // Mostrar todos
+    }
+  }}
+  style={{ marginTop: 10, marginBottom: 20 }}
+>
+            <Radio value="todos">Todos</Radio>
             <Radio value="nombre">Nombre</Radio>
-            <Radio value="id">Matrícula</Radio>
+            <Radio value="matricula">Matrícula</Radio>
             <Radio value="grupo">Grupo</Radio>
           </Radio.Group>
 
@@ -197,6 +255,10 @@ const Alumnos = () => {
             onFinish={handleSubmit}
             className="student-form"
           >
+            <Form.Item name="id" noStyle>
+  <Input type="hidden" />
+</Form.Item>
+
             <Row gutter={16}>
               <Col span={24}>
                 <Form.Item
@@ -204,7 +266,7 @@ const Alumnos = () => {
                   label="Matrícula"
                   rules={[{ required: true, message: 'Ingrese la matrícula' }]}
                 >
-                  <Input className="input-outline" placeholder="placeholder" />
+                  <Input className="input-outline" placeholder="Matrícula" />
                 </Form.Item>
               </Col>
 
@@ -214,35 +276,27 @@ const Alumnos = () => {
                   label="Nombre completo"
                   rules={[{ required: true, message: 'Ingrese el nombre' }]}
                 >
-                  <Input className="input-outline" placeholder="placeholder" />
+                  <Input className="input-outline" placeholder="Nombre completo" />
                 </Form.Item>
               </Col>
 
               <Col span={24}>
                 <Form.Item
-                  name="grupo"
-                  label="Grupo"
-                  rules={[{ required: true, message: 'Ingrese el grupo' }]}
-                >
-                  <Input className="input-outline" placeholder="placeholder" />
-                </Form.Item>
-              </Col>
+  name="grupo"
+  label="Grupo"
+  rules={[{ required: true, message: 'Seleccione un grupo' }]}
+>
+  <Select
+    placeholder="Seleccione un grupo"
+    className="input-outline"
+    options={nombresUnicos.map((g) => ({
+      value: g.nombre,
+      label: g.nombre,
+    }))}
+  />
 
-              <Col span={24}>
-                <Form.Item
-                  name="grupos"
-                  label="Grupos"
-                  rules={[{ required: true, message: 'Seleccione al menos uno' }]}
-                >
-                  <Select
-                    mode="multiple"
-                    placeholder="placeholder"
-                    className="input-outline"
-                  >
-                    <Option value="TI‑501">TI‑501</Option>
-                    <Option value="TI‑602">TI‑602</Option>
-                    <Option value="TI‑503">TI‑503</Option>
-                  </Select>
+
+
                 </Form.Item>
               </Col>
 
@@ -251,6 +305,7 @@ const Alumnos = () => {
                   htmlType="submit"
                   className="btn-save"
                   icon={<SaveOutlined />}
+                  loading={loading}
                 >
                   Guardar
                 </Button>
@@ -262,9 +317,11 @@ const Alumnos = () => {
           <Table
             columns={columns}
             dataSource={students}
-            rowKey="id"
+            rowKey="matricula"
             pagination={{ pageSize: 8 }}
+            loading={loading}
             className="student-table"
+            style={{ marginTop: 20 }}
           />
         </div>
       }
