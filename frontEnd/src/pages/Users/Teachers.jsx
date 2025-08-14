@@ -28,11 +28,14 @@ const Teachers = () => {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(data.password, salt);
       const nuevoUsuario = {
-        nombre: data.name,
+        nombre: data.maestroNombre,
         contrasena: hashedPassword,
         estatus: true,
         rol: "Maestro",
+        idProfesor: data.maestroId,
       };
+      
+      console.log("Nuevo usuario:", nuevoUsuario);
 
       const response = await usuarioService.create(nuevoUsuario);
 
@@ -49,6 +52,22 @@ const Teachers = () => {
     }
   };
 
+  // Función para eliminar usuario
+  const handleEliminarUsuario = async (id) => {
+    try {
+      const response = await usuarioService.delete(id);
+      if (response && response.errorCode) {
+        message.error("Error al eliminar usuario: " + response.errorCode);
+      } else {
+        setMaestros((prevUsuarios) => prevUsuarios.filter((u) => u.id !== id));
+        message.success("Usuario eliminado exitosamente");
+      }
+    } catch (error) {
+      message.error("Error al eliminar usuario");
+      console.error("Error al eliminar usuario:", error);
+    }
+  };
+
   const dataSource = maestros.map((usuario) => ({
     key: usuario.id,
     name: usuario.nombre,
@@ -59,7 +78,7 @@ const Teachers = () => {
         <button onClick={() => console.log(`Editar usuario ${usuario.id}`)}>
           Editar
         </button>
-        <button onClick={() => console.log(`Eliminar usuario ${usuario.id}`)}>
+        <button onClick={() => handleEliminarUsuario(usuario.id)}>
           Eliminar
         </button>
       </div>

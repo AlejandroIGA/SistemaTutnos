@@ -45,6 +45,14 @@ const usuarioService = {
         } catch (error) {
             return [{ "errorCode": error.status }]
         }
+    },
+    "delete": async (id) => {
+        try {
+            const response = await api.delete(`${USUARIO_BASE_URL}/${id}`)
+            return response.data;
+        } catch (error) {
+            return [{ "errorCode": error.status }]
+        }
     }
 };
 
