@@ -21,7 +21,7 @@ const SolicitudesM = () => {
         description: data[0].message || defaultErrorMsg,
       });
     } else {
-      const dataWithKeys = data.map((item, index) => ({ 
+      const dataWithKeys = data.map((item, index) => ({
         key: item.id || index.toString(),
         ...item,
       }));
@@ -60,8 +60,19 @@ const SolicitudesM = () => {
     fetchRevision();
   };
 
-  useEffect(() => {
+  const cargarDatos = async () => {
+    try {
+      const profesor = await solicitudService.profesor();
+      console.log("Profesor cargado:", profesor); 
+    } catch (error) {
+      console.error("Error al obtener datos del profesor:", error);
+    }
+
     refreshSolicitudes();
+  };
+
+  useEffect(() => {
+    cargarDatos(); 
   }, []);
 
   const handleAceptar = async (record) => {
@@ -182,7 +193,7 @@ const SolicitudesM = () => {
       <Header nameSection={"Bienvenido"} />
       <div className="solicitudes-container">
         {error && <div className="error-message">{error}</div>}
-        
+
         <Card title="Solicitudes pendientes" bordered={false} className="card-pendientes">
           <Table 
             columns={pendientesColumns} 
@@ -192,7 +203,7 @@ const SolicitudesM = () => {
             className="tabla-solicitudes"
           />
         </Card>
-        
+
         <Card title="Solicitudes en revisión" bordered={false} className="card-revision">
           <Table 
             columns={revisionColumns} 

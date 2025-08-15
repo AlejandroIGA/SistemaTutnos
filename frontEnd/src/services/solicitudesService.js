@@ -1,11 +1,25 @@
 import api from '../axiosConfig'
 
 const SOLICITUDES_BASE_URL = "http://localhost:8086/api/solicitud";
+const PROFESORES_BASE_URL = "http://localhost:8085/api/profesor"
 
 const solicitudService = {
+  "profesor": async () => {
+  try {
+    const id = localStorage.getItem('id'); 
+    const response = await api.get(`${PROFESORES_BASE_URL}/my/usuario/${id}`);
+
+    const profesor = response.data;
+    localStorage.setItem('idProfesor', profesor.id); 
+
+    return profesor;
+  } catch (error) {
+    return [{ errorCode: error.response?.status || 500 }];
+  }
+},
   "pendientes": async () => {
     try {
-      const idProfesor = localStorage.getItem('id');
+      const idProfesor = localStorage.getItem('idProfesor');
       const response = await api.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/pendientes`);
       return response.data;
     } catch (error) {
@@ -14,7 +28,7 @@ const solicitudService = {
   },
   "revFin": async () => {
     try {
-      const idProfesor = localStorage.getItem('id');
+      const idProfesor = localStorage.getItem('idProfesor');
       const response = await api.get(`${SOLICITUDES_BASE_URL}/${idProfesor}/rev-fin`);
       return response.data;
     } catch (error) {
